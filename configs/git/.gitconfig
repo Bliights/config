@@ -1,0 +1,15 @@
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+[user]
+	name = Your_name
+	email = You_email_address
+    signingkey = Your_Key_ID
+[commit]
+	gpgSign = true
+[init]
+	defaultBranch = main
+[gpg]
+    program = C:\\Program Files (x86)\\GnuPG\\bin\\gpg.exe

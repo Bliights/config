@@ -1,0 +1,86 @@
+"$schema" = "https://starship.rs/config-schema.json"
+
+add_newline = true
+
+format = """
+[ ](fg:white bg:dark_blue)\
+$directory\
+[](fg:dark_blue bg:dark_orange)\
+$git_branch\
+$git_status\
+[](fg:dark_orange bg:green)\
+$python\
+[](fg:green)\
+$fill\
+$cmd_duration\
+$line_break\
+$character
+"""
+
+palette = "my_colors"
+
+[palettes.my_colors]
+light_blue = "#5FADF0"
+blue = "#007ACC"
+dark_blue = "#005293"
+light_green = "#28BA71"
+green = "#15633C"
+red = "#E63946"
+light_red = "#FF7F50"
+orange = "#FFA500"
+dark_orange = "#FF8C00"
+brown = "#8B4513"
+yellow = "#FFDD33"
+white = "#FFFFFF"
+black = "#000000"
+gray = "#969696"
+dark_gray = "#505050"
+purple = "#9B59B6"
+magenta = "#FF00FF"
+pink = "#DCA0FF"
+
+[directory]
+style = "fg:white bg:dark_blue"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Developer" = "󰲋 "
+
+[git_branch]
+symbol = ""
+style = "fg:white bg:dark_orange"
+format = "[ $symbol $branch ]($style)"
+
+[git_status]
+style = "fg:white bg:dark_orange"
+format = "[$all_status$ahead_behind]($style)"
+
+[python]
+symbol = ""
+style = "fg:white bg:green"
+format = "[ $symbol $virtualenv ]($style)"
+detect_files = []
+detect_extensions = []
+
+[fill]
+symbol = " "
+
+[cmd_duration]
+min_time = 500
+style = "fg:gray"
+format = "[$duration]($style)"
+
+[character]
+format = ""
+success_symbol = "[](bold fg:green)"
+error_symbol = "[](bold fg:red)"
+vimcmd_symbol = "[](bold fg:green)"
+vimcmd_replace_one_symbol = "[](bold fg:purple)"
+vimcmd_replace_symbol = "[](bold fg:purple)"
+vimcmd_visual_symbol = "[](bold fg:yellow)"

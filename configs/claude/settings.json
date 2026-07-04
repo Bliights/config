@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "ollama",
+    "ANTHROPIC_API_KEY": "",
+    "ANTHROPIC_BASE_URL": "http://localhost:11434",
+    "CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY": "1",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-ornith:9b",
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "128000"
+  },
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "deny": [
+      "Bash(sudo *)",
+      "Bash(rm *)",
+      "Bash(git push --force *)",
+      "Bash(git push --force-with-lease *)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(./secrets/**)",
+      "Read(**/.ssh/*)",
+      "Read(**/id_rsa)",
+      "Read(**/id_ed25519)"
+    ]
+  },
+  "model": "opus",
+  "availableModels": [
+    "claude-ornith:9b"
+  ],
+  "effortLevel": "medium",
+  "theme": "dark",
+  "cleanupPeriodDays": 90,
+  "autoCompactEnabled": true
+}

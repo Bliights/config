@@ -49,3 +49,6 @@ ms-toolsai.vscode-jupyter-slideshow
 ms-azuretools.vscode-docker
 docker.docker
 ms-azuretools.vscode-containers
+
+# Claude code
+Anthropic.claude-code

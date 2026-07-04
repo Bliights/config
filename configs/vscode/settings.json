@@ -1,72 +1,129 @@
 {
-    // Terminal
-    "terminal.integrated.defaultProfile.windows": "Git Bash",
-    "terminal.integrated.fontFamily": "CaskaydiaMono Nerd Font Mono",
-    "terminal.integrated.initialHint": false,   // Disable startup hint
-    "terminal.integrated.env.windows": {
-        "MSYS2_ENV_CONV_EXCL": "PATH"   // Fix path parsing for Git Bash
-    },
-    "terminal.integrated.stickyScroll.enabled": false,  // No line that stick at the top of the terminal
-    
-    // UI
-    "workbench.colorTheme": "Dark Modern",
-    "workbench.iconTheme": "material-icon-theme",
-    "background.panelBackgrounds": [
-        "c:/Users/.../assets/space.jpg"
-    ],
-    "background.editorBackgrounds": [
-        "c:/Users/.../assets/mountain.jpg"
-    ],
-    "background.sidebarBackgrounds": [
-        "c:/Users/.../assets/japan_festival.jpg"
-    ],
-    "background.backgroundOpacity": [
-        0.1,
-        0.1,
-        0.1,
-        0.1
-    ],
-    "explorer.compactFolders": false,   // Show full folder tree
-    "diffEditor.ignoreTrimWhitespace": false,   // Show whitespace differences in diffs
-    "editor.tabSize": 4,
-    "editor.insertSpaces": true,
-    "indentRainbow.includedLanguages": [
-        "python"
-    ],
-    
-    // GitHub Copilot
-    "github.copilot.enable": {
-        "*": false,         // Disable Copilot globally
-        "plaintext": false, // Disable in plain text
-        "markdown": true,   // Enable in markdown 
-        "scminput": false,  // Disable in commit messages
-        "python": false     // Disable in Python
-    },
-    "github.copilot.nextEditSuggestions.enabled": true,
-
-    // Python
-    "autoDocstring.docstringFormat": "numpy",
-    "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff",
-        "editor.formatOnSave": true,
-        "editor.codeActionsOnSave": {
-            "source.fixAll": "explicit",
-            "source.organizeImports": "explicit"
-        }
-    },
-    "python.terminal.activateEnvironment": false,
-
-    // Notebook
-    "notebook.formatOnSave.enabled": true,
-    "notebook.defaultFormatter": "charliermarsh.ruff",
-    "notebook.output.scrolling": true,
-    "notebook.codeActionsOnSave": {
-        "notebook.source.fixAll": "explicit",
-        "notebook.source.organizeImports": "explicit"
-    },
-    "notebook.lineNumbers": "on",
-
-    // Ruff
-    "ruff.logLevel": "warning",
-    "ruff.lineLength": 100
+  // Terminal
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "terminal.integrated.fontFamily": "CaskaydiaMono Nerd Font Mono",
+  "terminal.integrated.initialHint": false, // Disable startup hint
+  "terminal.integrated.env.windows": {
+    "MSYS2_ENV_CONV_EXCL": "PATH" // Fix path parsing for Git Bash
+  },
+  "terminal.integrated.stickyScroll.enabled": false, // No line that stick at the top of the terminal
+  // UI
+  "workbench.colorTheme": "Dark Modern",
+  "workbench.iconTheme": "material-icon-theme",
+  "background.panelBackgrounds": [
+    "c:/Users/.../assets/space.jpg"
+  ],
+  "background.editorBackgrounds": [
+    "c:/Users/.../assets/mountain.jpg"
+  ],
+  "background.sidebarBackgrounds": [
+    "c:/Users/.../assets/japan_festival.jpg"
+  ],
+  "background.backgroundOpacity": [
+    0.1,
+    0.1,
+    0.1,
+    0.1
+  ],
+  "explorer.compactFolders": false, // Show full folder tree
+  "diffEditor.ignoreTrimWhitespace": false, // Show whitespace differences in diffs
+  "editor.formatOnSave": true,
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "files.exclude": {
+    "**/.git": false // To see the .git folder
+  },
+  "indentRainbow.includedLanguages": [
+    "python"
+  ],
+  // GitHub Copilot
+  "github.copilot.enable": {
+    "*": false, // Disable Copilot globally
+    "plaintext": false, // Disable in plain text
+    "markdown": true, // Enable in markdown 
+    "scminput": false, // Disable in commit messages
+    "python": false // Disable in Python
+  },
+  "github.copilot.nextEditSuggestions.enabled": true,
+  // Python
+  "autoDocstring.docstringFormat": "numpy",
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    }
+  },
+  "python.terminal.activateEnvironment": false,
+  // Notebook
+  "notebook.formatOnSave.enabled": true,
+  "notebook.defaultFormatter": "charliermarsh.ruff",
+  "notebook.output.scrolling": true,
+  "notebook.codeActionsOnSave": {
+    "notebook.source.fixAll": "explicit",
+    "notebook.source.organizeImports": "explicit"
+  },
+  "notebook.lineNumbers": "on",
+  // Ruff
+  "ruff.logLevel": "warn",
+  "ruff.lineLength": 100,
+  // Debugging config
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      // --- Python: debug active file, step into libraries & stdlib ---
+      {
+        "name": "Python: Debug active file",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${file}",
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}"
+        },
+        "justMyCode": false // allow stepping into site-packages
+      },
+      // --- Rust: build and debug executable target ---
+      {
+        "name": "Rust: Cargo build + debug",
+        "type": "lldb",
+        "request": "launch",
+        "cargo": {
+          "args": [
+            "build"
+          ],
+          "cwd": "${workspaceFolder}",
+          "problemMatcher": "$rustc"
+        },
+        "args": [],
+        "cwd": "${workspaceFolder}",
+        "sourceLanguages": [
+          "rust"
+        ],
+        "terminal": "integrated"
+      },
+      // --- Rust: build and debug tests ---
+      {
+        "name": "Rust: Cargo test + debug",
+        "type": "lldb",
+        "request": "launch",
+        "cargo": {
+          "args": [
+            "test",
+            "--no-run"
+          ],
+          "cwd": "${workspaceFolder}",
+          "problemMatcher": "$rustc"
+        },
+        "args": [],
+        "cwd": "${workspaceFolder}",
+        "sourceLanguages": [
+          "rust"
+        ],
+        "terminal": "integrated"
+      }
+    ]
+  },
+  // Claude code
+  "claudeCode.disableLoginPrompt": true
 }

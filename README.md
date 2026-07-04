@@ -110,3 +110,19 @@ Next, you need to update your Visual Studio Code settings. To do this, open the 
 - [mountain](https://fr.freepik.com/images-ia-gratuites/magnifique-paysage-montagneux_133374408.htm#fromView=keyword&page=4&position=33&uuid=fec8b9d8-c64c-4808-82e8-42d1d17a3ac9&query=Montagne+magique)
 - [japan_festival](https://wallpapercave.com/w/wp13017680)
 - [space](https://www.wallpaperflare.com/universe-space-art-sky-outer-space-galaxy-planet-wallpaper-tycvb/download/720x1280)
+
+### 8. Claude code + Ollama
+***
+This setup is really interesting because it lets you use Claude Code with local Ollama models, without using any Anthropic credits. To do this, you first need to install [Ollama](https://ollama.com/download/windows). I recommend using the desktop version, so the Ollama server can run automatically in the background and you do not need to launch it manually every time.
+
+Now you need to install Claude Code. For this, I will use `winget` again:
+```bash
+$ winget install Anthropic.ClaudeCode
+```
+
+Then, add the [settings.json](./configs/claude/settings.json) file to the **.claude** directory located in your user root. Now you only need to download a model, for example [`ornith:9b`](https://ollama.com/library/ornith) and to make Claude Code detect it more easily, we will create an alias with a name starting with `claude-`:
+```bash
+$ ollama pull ornith:9b
+$ ollama cp ornith:9b claude-ornith:9b
+```
+The `ollama cp` command does not download the model again. It only creates another local name for the same model. Finally, you need to add the new model name to the `availableModels` section in your Claude Code settings to add it to the model list.

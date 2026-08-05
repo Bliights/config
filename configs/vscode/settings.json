@@ -64,6 +64,15 @@
     "notebook.source.organizeImports": "explicit"
   },
   "notebook.lineNumbers": "on",
+  // Toml
+  "evenBetterToml.formatter.allowedBlankLines": 1,
+  "evenBetterToml.formatter.arrayAutoExpand": true,
+  "evenBetterToml.formatter.arrayAutoCollapse": false,
+  "evenBetterToml.formatter.arrayTrailingComma": true,
+  "evenBetterToml.formatter.trailingNewline": true,
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
   // Ruff
   "ruff.logLevel": "warn",
   "ruff.lineLength": 100,

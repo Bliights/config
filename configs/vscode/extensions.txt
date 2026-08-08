@@ -22,6 +22,7 @@ george-alisson.html-preview-vscode
 
 # Config
 tamasfe.even-better-toml
+redhat.vscode-yaml
 fill-labs.dependi
 
 # Visual Helpers

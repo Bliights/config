@@ -70,8 +70,15 @@
   "evenBetterToml.formatter.arrayAutoCollapse": false,
   "evenBetterToml.formatter.arrayTrailingComma": true,
   "evenBetterToml.formatter.trailingNewline": true,
+  "evenBetterToml.formatter.alignComments": true,
   "[toml]": {
     "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
+  // Yaml
+  "redhat.telemetry.enabled": false,
+  "yaml.format.printWidth": 120,
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
   },
   // Ruff
   "ruff.logLevel": "warn",

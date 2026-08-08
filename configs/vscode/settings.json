@@ -30,6 +30,9 @@
   "editor.formatOnSave": true,
   "editor.tabSize": 4,
   "editor.insertSpaces": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
   "files.exclude": {
     "**/.git": false // To see the .git folder
   },
@@ -40,12 +43,13 @@
   "github.copilot.enable": {
     "*": false, // Disable Copilot globally
     "plaintext": false, // Disable in plain text
-    "markdown": true, // Enable in markdown 
+    "markdown": true, // Enable in markdown
     "scminput": false, // Disable in commit messages
     "python": false // Disable in Python
   },
   "github.copilot.nextEditSuggestions.enabled": true,
   // Python
+  "python.terminal.useEnvFile": true,
   "autoDocstring.docstringFormat": "numpy",
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
@@ -71,8 +75,11 @@
   "evenBetterToml.formatter.arrayTrailingComma": true,
   "evenBetterToml.formatter.trailingNewline": true,
   "evenBetterToml.formatter.alignComments": true,
+  "evenBetterToml.formatter.columnWidth": 120,
   "[toml]": {
-    "editor.defaultFormatter": "tamasfe.even-better-toml"
+    "editor.defaultFormatter": "tamasfe.even-better-toml",
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true
   },
   // Yaml
   "redhat.telemetry.enabled": false,
@@ -83,6 +90,8 @@
   // Ruff
   "ruff.logLevel": "warn",
   "ruff.lineLength": 120,
+  // Ty
+  "python.languageServer": "None",
   // Debugging config
   "launch": {
     "version": "0.2.0",

@@ -30,5 +30,6 @@
   "effortLevel": "medium",
   "theme": "dark",
   "cleanupPeriodDays": 90,
-  "autoCompactEnabled": true
+  "autoCompactEnabled": true,
+  "alwaysThinkingEnabled": false
 }

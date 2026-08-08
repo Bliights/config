@@ -7,7 +7,6 @@ mhutchie.git-graph
 
 # Markdown
 yzane.markdown-pdf
-bierner.markdown-mermaid
 bierner.markdown-preview-github-styles
 
 # LaTeX / PDF

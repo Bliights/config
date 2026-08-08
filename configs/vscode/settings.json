@@ -75,7 +75,7 @@
   },
   // Ruff
   "ruff.logLevel": "warn",
-  "ruff.lineLength": 100,
+  "ruff.lineLength": 120,
   // Debugging config
   "launch": {
     "version": "0.2.0",
@@ -134,5 +134,6 @@
     ]
   },
   // Claude code
-  "claudeCode.disableLoginPrompt": true
+  "claudeCode.disableLoginPrompt": true,
+  "claudeCode.initialPermissionMode": "acceptEdits"
 }

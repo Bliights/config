@@ -111,18 +111,138 @@ Next, you need to update your Visual Studio Code settings. To do this, open the 
 - [japan_festival](https://wallpapercave.com/w/wp13017680)
 - [space](https://www.wallpaperflare.com/universe-space-art-sky-outer-space-galaxy-planet-wallpaper-tycvb/download/720x1280)
 
-### 8. Claude code + Ollama
+### 8. Ollama setup
 ***
-This setup is really interesting because it lets you use Claude Code with local Ollama models, without using any Anthropic credits. To do this, you first need to install [Ollama](https://ollama.com/download/windows). I recommend using the desktop version, so the Ollama server can run automatically in the background and you do not need to launch it manually every time.
 
-Now you need to install Claude Code. For this, I will use `winget` again:
+[Ollama](https://ollama.com/download/windows) runs language models locally and exposes an API on `http://localhost:11434`. In this setup, Claude Code sends model requests to that local endpoint instead of the Anthropic API. The desktop version is recommended on Windows because it can keep the Ollama server available in the background. The model still runs on your machine and uses your local CPU, GPU, RAM, and storage.
+
+To install Ollama, start the desktop application, then confirm that the command is available:
+
+```bash
+$ ollama --version
+```
+
+Now we will download the model that we will use, this configuration uses [`ornith:9b`](https://ollama.com/library/ornith) as its base model (The downloaded model remains in Ollama's local model store and can be reused later without pulling it again):
+
+```bash
+$ ollama pull ornith:9b
+```
+
+Now we will use the [Modelfile](./configs/claude/ollama/Modelfile) to create a local variant with settings suited to coding-agent work:
+
+```text
+FROM ornith:9b
+
+PARAMETER num_ctx 65536
+PARAMETER temperature 0.2
+PARAMETER top_p 0.9
+PARAMETER top_k 20
+PARAMETER repeat_penalty 1.05
+```
+
+- `num_ctx 65536` provides a larger context for repository files and long conversations.
+- `temperature 0.2` favors stable and focused answers.
+- `top_p` and `top_k` limit unlikely token choices while preserving useful variation.
+- `repeat_penalty` reduces repetitive output.
+
+Create the variant from the repository root:
+
+```bash
+$ ollama create claude-ornith:9b -f ./configs/claude/ollama/Modelfile
+```
+
+`ollama create` does not fine-tune Ornith or create a new upstream model, it creates a local model definition based on `ornith:9b` with the parameters from the `Modelfile`. Moreover we prefix the name of the created model with  `claude-` so that CLaude code can detect it more easily ( and also prevents confusion between the original `ornith:9b` model) 
+
+### 9. Claude Code
+***
+
+Claude Code provides the coding-agent interface. Ollama provides the local model. This repository adds the configuration and workflow that control how the agent understands, modifies, tests, verifies, and reviews code.
+
+The setup contains three parts:
+
+- [settings.json](./configs/claude/settings.json) connects Claude Code to Ollama and configures permissions and model selection;
+- [CLAUDE.md](./configs/claude/CLAUDE.md) defines the global engineering and safety contract;
+- [skills](./configs/claude/skills) contains the reusable development workflows.
+
+Install Claude Code with `winget`:
+
 ```bash
 $ winget install Anthropic.ClaudeCode
 ```
 
-Then, add the [settings.json](./configs/claude/settings.json) file to the **.claude** directory located in your user root. Now you only need to download a model, for example [`ornith:9b`](https://ollama.com/library/ornith) and to make Claude Code detect it more easily, we will create an alias with a name starting with `claude-`:
+Create the user configuration directory and copy the configuration:
+
 ```bash
-$ ollama pull ornith:9b
-$ ollama cp ornith:9b claude-ornith:9b
+$ mkdir -p ~/.claude ~/.claude/skills
+$ cp ./configs/claude/settings.json ~/.claude/settings.json
+$ cp ./configs/claude/CLAUDE.md ~/.claude/CLAUDE.md
+$ cp -r ./configs/claude/skills/. ~/.claude/skills/
 ```
-The `ollama cp` command does not download the model again. It only creates another local name for the same model. Finally, you need to add the new model name to the `availableModels` section in your Claude Code settings to add it to the model list.
+
+The settings route requests to `http://localhost:11434`, map Claude Code's `opus` selection to `claude-ornith:9b`, enable local model discovery, and expose the model in `availableModels`. Keep Ollama running before starting Claude Code.
+
+
+For a project-specific workflow, add a `CLAUDE.md` to the repository. Claude Code combines it with the global `~/.claude/CLAUDE.md`. Keep reusable engineering and safety rules global; keep project commands, architecture, conventions, and Definition of Done in the project file.
+
+#### Workflow
+***
+
+For non-trivial work, the agent classifies the request and selects the shortest reliable path:
+
+```mermaid
+flowchart TD
+    A["Understand the request"] --> B["Classify risk (R0-R3)"]
+    B --> C{"Is the work ready to plan?"}
+    C -- "Goal unclear" --> D["Frame the problem"]
+    C -- "Solution unclear" --> E["Solve the problem"]
+    C -- "Architecture decision" --> F["Design the architecture"]
+    C -- "Yes" --> G["Plan when needed"]
+    D --> G
+    E --> G
+    F --> G
+    G --> H["Implement tested slices"]
+    H --> I["Verify behavior, quality, and security"]
+    I -- "Failure" --> J["Diagnose the failure"]
+    J --> H
+    I -- "Pass" --> K["Review the change"]
+    K -- "Finding" --> H
+    K -- "No blocking finding" --> L{"Production-facing?"}
+    L -- "Yes" --> M["Prepare release readiness"]
+    L -- "No" --> N["Leave uncommitted changes for the user"]
+    M --> N
+    I -- "Security blocker" --> O["Stop and preserve evidence"]
+```
+
+The risk tier determines the amount of evidence required:
+
+- `R0` - local and reversible change;
+- `R1` - standard behavior change;
+- `R2` - sensitive or cross-cutting change;
+- `R3` - critical or hard-to-reverse change.
+
+Every behavior change requires a meaningful test. External APIs use deterministic fakes, mock servers, or sanitized fixtures. Before completion, the agent runs the configured pre-commit mechanism or the repository's equivalent format, lint, type, test, build, and security gates.
+
+#### Skills
+***
+
+Skills are small workflow documents. Claude Code first sees their names and descriptions, then loads the complete `SKILL.md` only when a skill is selected. This keeps the global instructions stable while allowing specialized behavior for each situation.
+
+| Phase | Skill | Purpose |
+| --- | --- | --- |
+| Route | `auto-choose-workflow` | Classify the request, assign its risk tier, and select the shortest reliable flow. |
+| Prepare | `bootstrap-project-context` | Discover repository commands, architecture, rules, and project-specific agent context. |
+| Prepare | `improve-prompt` | Convert a rough request into a concise execution-ready prompt. |
+| Define | `frame-problem` | Clarify the goal, scope, constraints, decisions, and acceptance criteria. |
+| Decide | `solve-problem` | Compare solution shapes using evidence and explicit tradeoffs. |
+| Design | `design-architecture` | Decide system boundaries, contracts, quality attributes, migration, and rollback. |
+| Plan | `plan-change` | Produce ordered vertical slices with tests, risks, dependencies, and evidence. |
+| Build | `execute-change` | Modify code in tested slices while keeping the worktree runnable and uncommitted. |
+| Diagnose | `diagnose-failure` | Reproduce, isolate, and explain a failure before implementing a fix. |
+| Verify | `verify-change` | Prove behavior with security, tests, quality, runtime, and pre-commit evidence. |
+| Review | `review-change` | Review a diff, branch, commit range, or PR without publishing comments. |
+| Assess | `audit-codebase` | Analyze a codebase or subsystem and prioritize improvements without changing files. |
+| Release | `prepare-release-readiness` | Prepare rollout, observability, rollback, and operator evidence without deploying. |
+
+Model-invoked skills can activate automatically when their descriptions match the request. `audit-codebase`, `improve-prompt`, and `bootstrap-project-context` are deliberate user entry points and should be invoked explicitly when you want those workflows.
+
+For a pull-request review, use `/review-change <PR URL or number>`. The skill refreshes refs with `git fetch --prune`, tests the pinned PR branch in a disposable worktree, and can test its uncommitted integration with the pinned base for merge readiness. It reports findings locally, cleans its worktrees, and never commits, pushes, merges, approves, or publishes a review.

@@ -150,6 +150,5 @@
     ]
   },
   // Claude code
-  "claudeCode.disableLoginPrompt": true,
-  "claudeCode.initialPermissionMode": "acceptEdits"
+  "claudeCode.disableLoginPrompt": true
 }
